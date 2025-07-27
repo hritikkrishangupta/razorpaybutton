@@ -80,7 +80,7 @@
   <div class="container">
     <img class="razorpay-logo" src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" alt="Razorpay Logo">
     <h2 id="amountLabel">Pay ₹0 Securely</h2>
-    <p>Complete your payment with Razorpay</p>
+    <p id="paymentDesc">Complete your payment with Razorpay</p>
 
     <button id="payBtn" class="button">Pay with Razorpay</button>
     <button id="continueBtn" class="button hidden">Click to Continue</button>
@@ -89,31 +89,30 @@
   </div>
 
   <script>
-    // Get amount from URL
     const queryParams = new URLSearchParams(window.location.search);
     let amount = parseInt(queryParams.get('amount')) || 10; // Default ₹10
 
-    // Update amount label
     document.getElementById('amountLabel').textContent = `Pay ₹${amount} Securely`;
 
     const payBtn = document.getElementById('payBtn');
     const continueBtn = document.getElementById('continueBtn');
+    const heading = document.getElementById('amountLabel');
+    const description = document.getElementById('paymentDesc');
 
     payBtn.onclick = function () {
       const options = {
         key: "rzp_test_wKiia5lXiJcPbR", // Replace with your key
-        amount: amount * 100, // Convert ₹ to paise
+        amount: amount * 100, // in paise
         currency: "INR",
         name: "Demo Merchant",
         description: "Test Payment",
         image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg",
         handler: function (response) {
-          // Hide pay button, show continue
+          // Update UI on payment success
           payBtn.classList.add("hidden");
           continueBtn.classList.remove("hidden");
-
-          // Optionally post back
-          console.log("Payment Success:", response.razorpay_payment_id);
+          heading.textContent = "Payment Successful!";
+          description.textContent = "Thank you for your payment.";
         },
         theme: {
           color: "#0d8edb"
@@ -128,6 +127,12 @@
       window.parent.postMessage(
         JSON.stringify({
           event_code: "ym-client-event",
+          data: JSON.stringify({
+            event: {
+              code: "passengerDetails",
+              data: "Success",
+            },
+          }),
         }),
         "*"
       );
@@ -136,3 +141,4 @@
 
 </body>
 </html>
+
