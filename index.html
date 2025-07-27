@@ -106,7 +106,7 @@
             // Send event back to bot or parent window (e.g. WebView)
             window.parent.postMessage(
               JSON.stringify({
-                event_code: "payment_success"
+                event_code: "ym-client-event"
               }),
               "*"
             );
